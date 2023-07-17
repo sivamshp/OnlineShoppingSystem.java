@@ -1,0 +1,112 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Product {
+    private String name;
+    private double price;
+
+    public Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+}
+
+class Customer {
+    private String name;
+    private List<Product> cart;
+
+    public Customer(String name) {
+        this.name = name;
+        this.cart = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void addToCart(Product product) {
+        cart.add(product);
+    }
+
+    public List<Product> getCart() {
+        return cart;
+    }
+
+    public double getTotalPrice() {
+        double total = 0;
+        for (Product product : cart) {
+            total += product.getPrice();
+        }
+        return total;
+    }
+}
+
+public class OnlineShoppingSystem {
+    private static List<Product> products = new ArrayList<>();
+
+    public static void main(String[] args) {
+        initializeProducts();
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your name: ");
+        String customerName = scanner.nextLine();
+        Customer customer = new Customer(customerName);
+
+        System.out.println("\nWelcome, " + customer.getName() + "! Let's start shopping.\n");
+
+        int choice;
+        do {
+            displayProducts();
+            System.out.print("Enter the product number to add to your cart (0 to exit): ");
+            choice = scanner.nextInt();
+
+            if (choice > 0 && choice <= products.size()) {
+                Product selectedProduct = products.get(choice - 1);
+                customer.addToCart(selectedProduct);
+                System.out.println(selectedProduct.getName() + " added to your cart.");
+            } else if (choice != 0) {
+                System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 0);
+
+        System.out.println("\n" + customer.getName() + "'s Shopping Cart:");
+        displayCart(customer);
+
+        System.out.println("Total Price: $" + customer.getTotalPrice());
+
+        scanner.close();
+    }
+
+    private static void initializeProducts() {
+        products.add(new Product("Laptop", 800));
+        products.add(new Product("Smartphone", 600));
+        products.add(new Product("Headphones", 100));
+        products.add(new Product("Keyboard", 50));
+    }
+
+    private static void displayProducts() {
+        System.out.println("Available Products:");
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            System.out.println((i + 1) + ". " + product.getName() + " - $" + product.getPrice());
+        }
+    }
+
+    private static void displayCart(Customer customer) {
+        List<Product> cart = customer.getCart();
+        for (int i = 0; i < cart.size(); i++) {
+            Product product = cart.get(i);
+            System.out.println((i + 1) + ". " + product.getName() + " - $" + product.getPrice());
+        }
+    }
+}
